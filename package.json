@@ -1,0 +1,22 @@
+{
+  "name": "cal",
+  "version": "0.0.0",
+  "description": "Generate calendar array.",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/leader22/cal.git"
+  },
+  "author": "leader22",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/leader22/cal/issues"
+  },
+  "homepage": "https://github.com/leader22/cal"
+}
