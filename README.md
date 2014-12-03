@@ -1,0 +1,4 @@
+cal
+===
+
+Generate calendar array.
