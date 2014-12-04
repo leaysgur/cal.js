@@ -32,8 +32,8 @@
     Cal = function(options) {
         options = options || {};
 
-        this.year      = (options.y|0) || 2014;
-        this.month     = (options.m|0) || 1;
+        this.year      = (options.year|0)  || 2014;
+        this.month     = (options.month|0) || 1;
         this._weekMap  = options.fromMonday ? WEEK_MAP['MON'] : WEEK_MAP['SUN'];
         this._calArr   = this._generate();
 
