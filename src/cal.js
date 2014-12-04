@@ -35,10 +35,7 @@
         this.year      = (options.y|0) || 2014;
         this.month     = (options.m|0) || 1;
         this._weekMap  = options.fromMonday ? WEEK_MAP['MON'] : WEEK_MAP['SUN'];
-        this._calArr   = [];
-        this._calTable = [];
-
-        this._generate();
+        this._calArr   = this._generate();
 
         return this;
     };
@@ -46,8 +43,7 @@
     Cal.prototype = {
         constructor: Cal,
         getCalArr:   _getCalArr,
-        getDayTable: _getDayTable,
-        getCalTable: _getCalTable,
+        getDayArr:   _getDayArr,
         _generate:   _generate,
         _getDayObj:  _getDayObj
     };
@@ -79,32 +75,27 @@
         var mayNextYear = (thisMonth === 12) ? thisYear + 1 : thisYear;
         var nextMonth   = (thisMonth === 12) ? 1 : thisMonth + 1;
 
-        var monthArr = [],
+        var calArr = [],
             dayObj;
         var i = 0 , l = 7 * 6;
         for (; i < l; i++) {
             var date = i - thisFirstDayIdx;
             // 先月
             if (date < 1) {
-                monthArr[i] = this._getDayObj(mayLastYear, lastMonth, lastLastDate + date, i);
+                calArr[i] = this._getDayObj(mayLastYear, lastMonth, lastLastDate + date, i);
             }
             // 来月
             else if (thisLastDate < date) {
-                monthArr[i] = this._getDayObj(mayNextYear, nextMonth, date - thisLastDate, i);
+                calArr[i] = this._getDayObj(mayNextYear, nextMonth, date - thisLastDate, i);
             }
             // 今月
             else {
                 dayObj = this._getDayObj(thisYear, thisMonth, date, i);
-                monthArr[i] = dayObj;
-                // 今月分だけも作っとく
-                this._calArr.push(dayObj);
+                calArr[i] = dayObj;
             }
         }
 
-        // カレンダーの表形式の配列
-        while (monthArr.length) {
-            this._calTable.push(monthArr.splice(0, 7))
-        }
+        return calArr;
     }
 
     function _getDayObj(year, month, date, i) {
@@ -133,11 +124,7 @@
         return this._calArr;
     }
 
-    function _getCalTable() {
-        return this._calTable;
-    }
-
-    function _getDayTable() {
+    function _getDayArr() {
         return this._weekMap['STR'];
     }
 
