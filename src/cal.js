@@ -77,20 +77,41 @@
 
         var calArr = [],
             dayObj;
-        var i = 0 , l = 7 * 6;
+        var i = 0 , l = 7 * 6; // 7days * 6weeks
         for (; i < l; i++) {
             var date = i - thisFirstDayIdx;
             // 先月
             if (date < 1) {
-                calArr[i] = this._getDayObj(mayLastYear, lastMonth, lastLastDate + date, i);
+                calArr[i] = this._getDayObj({
+                    y: mayLastYear,
+                    m: lastMonth,
+                    d: lastLastDate + date,
+                    i: i,
+                    isNextMonth: 0,
+                    isLastMonth: 1
+                });
             }
             // 来月
             else if (thisLastDate < date) {
-                calArr[i] = this._getDayObj(mayNextYear, nextMonth, date - thisLastDate, i);
+                calArr[i] = this._getDayObj({
+                    y: mayNextYear,
+                    m: nextMonth,
+                    d: date - thisLastDate,
+                    i: i,
+                    isNextMonth: 1,
+                    isLastMonth: 0
+                });
             }
             // 今月
             else {
-                dayObj = this._getDayObj(thisYear, thisMonth, date, i);
+                dayObj = this._getDayObj({
+                    y: thisYear,
+                    m: thisMonth,
+                    d: date,
+                    i: i,
+                    isNextMonth: 0,
+                    isLastMonth: 0
+                });
                 calArr[i] = dayObj;
             }
         }
@@ -98,7 +119,11 @@
         return calArr;
     }
 
-    function _getDayObj(year, month, date, i) {
+    function _getDayObj(args) {
+        var year  = args.y,
+            month = args.m,
+            date  = args.d,
+            i     = args.i;
         var DAY_STR = this._weekMap['STR'],
             GAP     = this._weekMap['GAP'];
 
@@ -108,15 +133,17 @@
         var day = (i + GAP) % 7;
 
         return {
-            YYYYMMDD: year + MM + DD,
-            YYYY:     year,
-            MM:       MM,
-            DD:       DD,
-            DAY:      DAY,
-            year:     year,
-            month:    Math.max(0, month - 1),
-            date:     date,
-            day:      day
+            YYYYMMDD:    year + MM + DD,
+            YYYY:        year,
+            MM:          MM,
+            DD:          DD,
+            DAY:         DAY,
+            year:        year,
+            month:       Math.max(0, month - 1),
+            date:        date,
+            day:         day,
+            isNextMonth: args.isNextMonth,
+            isLastMonth: args.isLastMonth
         };
     }
 
