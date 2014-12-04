@@ -131,6 +131,8 @@
         var DD  = __pad2(date);
         var DAY = DAY_STR[i % 7];
         var day = (i + GAP) % 7;
+        var isSun = day === 0;
+        var isSat = day === 6;
 
         return {
             YYYYMMDD:    year + MM + DD,
@@ -142,6 +144,8 @@
             month:       Math.max(0, month - 1),
             date:        date,
             day:         day,
+            isSunday:    isSun,
+            isSaturday:  isSat,
             isNextMonth: args.isNextMonth,
             isLastMonth: args.isLastMonth
         };
