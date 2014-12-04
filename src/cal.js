@@ -34,6 +34,7 @@
 
         this.year      = (options.year|0)  || 2014;
         this.month     = (options.month|0) || 1;
+        this.date      = (options.date|0)  || 1;
         this._weekMap  = options.fromMonday ? WEEK_MAP['MON'] : WEEK_MAP['SUN'];
         this._calArr   = this._generate();
 
@@ -133,6 +134,9 @@
         var day = (i + GAP) % 7;
         var isSun = day === 0;
         var isSat = day === 6;
+        var isNextMonth = args.isNextMonth;
+        var isLastMonth = args.isLastMonth;
+        var isBaseDate = !isLastMonth && !isNextMonth && date === this.date;
 
         return {
             YYYYMMDD:    year + MM + DD,
@@ -144,10 +148,11 @@
             month:       Math.max(0, month - 1),
             date:        date,
             day:         day,
+            isBaseDate:  isBaseDate,
             isSunday:    isSun,
             isSaturday:  isSat,
-            isNextMonth: args.isNextMonth,
-            isLastMonth: args.isLastMonth
+            isNextMonth: isNextMonth,
+            isLastMonth: isLastMonth
         };
     }
 
