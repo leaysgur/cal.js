@@ -36,20 +36,22 @@
         this.month     = (options.month|0) || 1;
         this.date      = (options.date|0)  || 1;
         this._weekMap  = options.fromMonday ? WEEK_MAP['MON'] : WEEK_MAP['SUN'];
-        this._calArr   = this._generate();
+        this._calArr   = this._generateCalArr();
+        this._dayArr   = this._generateDayArr();
 
         return this;
     };
 
     Cal.prototype = {
-        constructor: Cal,
-        getCalArr:   _getCalArr,
-        getDayArr:   _getDayArr,
-        _generate:   _generate,
-        _getDayObj:  _getDayObj
+        constructor:     Cal,
+        getCalArr:       _getCalArr,
+        getDayArr:       _getDayArr,
+        _generateCalArr: _generateCalArr,
+        _generateDayArr: _generateDayArr,
+        _getDayObj:      _getDayObj
     };
 
-    function _generate() {
+    function _generateCalArr() {
         var DAY_STR = this._weekMap['STR'];
         var GAP     = this._weekMap['GAP'];
 
@@ -120,6 +122,22 @@
         return calArr;
     }
 
+    function _generateDayArr() {
+        var DAY_STR = this._weekMap['STR'];
+        var GAP     = this._weekMap['GAP'];
+
+        var dayArr = [];
+        var i = 0, l = DAY_STR.length;
+        for (; i < l; i++) {
+            dayArr[i] = {
+                str: DAY_STR[i],
+                no:  (i + GAP) % 7
+            };
+        }
+
+        return dayArr;
+    }
+
     function _getDayObj(args) {
         var year  = args.y,
             month = args.m,
@@ -161,7 +179,7 @@
     }
 
     function _getDayArr() {
-        return this._weekMap['STR'];
+        return this._dayArr;
     }
 
     return Cal;
