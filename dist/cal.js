@@ -91,15 +91,14 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var WEEK_MAP = {
-    SUN: {
-        GAP: 0,
-        STR: ['日', '月', '火', '水', '木', '金', '土']
-    },
-    MON: {
+var __getWeekMap = function __getWeekMap(fromMonday) {
+    return fromMonday ? {
         GAP: 1,
         STR: ['月', '火', '水', '木', '金', '土', '日']
-    }
+    } : {
+        GAP: 0,
+        STR: ['日', '月', '火', '水', '木', '金', '土']
+    };
 };
 
 var __pad2 = function __pad2(num) {
@@ -112,10 +111,11 @@ var Cal = function () {
 
         options = options || {};
 
-        this.year = options.year | 0 || 2014;
+        this.year = options.year | 0 || 2017;
         this.month = options.month | 0 || 1;
         this.date = options.date | 0 || 1;
-        this._weekMap = options.fromMonday ? WEEK_MAP['MON'] : WEEK_MAP['SUN'];
+
+        this._weekMap = __getWeekMap(!!options.fromMonday);
         this._calArr = this._generateCalArr();
         this._dayArr = this._generateDayArr();
     }
@@ -123,20 +123,22 @@ var Cal = function () {
     _createClass(Cal, [{
         key: 'getCalArr',
         value: function getCalArr() {
-            return this._calArr;
+            return this._calArr.slice();
         }
     }, {
         key: 'getDayArr',
         value: function getDayArr() {
-            return this._dayArr;
+            return this._dayArr.slice();
         }
     }, {
         key: '_generateCalArr',
         value: function _generateCalArr() {
-            var DAY_STR = this._weekMap['STR'];
-            var GAP = this._weekMap['GAP'];
+            var _weekMap = this._weekMap,
+                DAY_STR = _weekMap.DAY_STR,
+                GAP = _weekMap.GAP;
 
             // monthのoriginは0から
+
             var thisFirstDateObj = new Date(this.year, this.month - 1, 1);
             // 次月の0day目は、今月の末日
             var thisLastDateObj = new Date(this.year, this.month, 0);
@@ -173,8 +175,8 @@ var Cal = function () {
                         m: lastMonth,
                         d: lastLastDate + date,
                         i: i,
-                        isNextMonth: 0,
-                        isLastMonth: 1
+                        isNextMonth: false,
+                        isLastMonth: true
                     });
                 }
                 // 来月
@@ -184,21 +186,20 @@ var Cal = function () {
                             m: nextMonth,
                             d: date - thisLastDate,
                             i: i,
-                            isNextMonth: 1,
-                            isLastMonth: 0
+                            isNextMonth: true,
+                            isLastMonth: false
                         });
                     }
                     // 今月
                     else {
-                            dayObj = this._getDayObj({
+                            calArr[i] = this._getDayObj({
                                 y: thisYear,
                                 m: thisMonth,
                                 d: date,
                                 i: i,
-                                isNextMonth: 0,
-                                isLastMonth: 0
+                                isNextMonth: false,
+                                isLastMonth: false
                             });
-                            calArr[i] = dayObj;
                         }
             }
 
@@ -207,8 +208,10 @@ var Cal = function () {
     }, {
         key: '_generateDayArr',
         value: function _generateDayArr() {
-            var DAY_STR = this._weekMap['STR'];
-            var GAP = this._weekMap['GAP'];
+            var _weekMap2 = this._weekMap,
+                DAY_STR = _weekMap2.DAY_STR,
+                GAP = _weekMap2.GAP;
+
 
             var dayArr = [];
             var i = 0,
@@ -225,12 +228,14 @@ var Cal = function () {
     }, {
         key: '_getDayObj',
         value: function _getDayObj(args) {
+            var _weekMap3 = this._weekMap,
+                DAY_STR = _weekMap3.DAY_STR,
+                GAP = _weekMap3.GAP;
+
             var year = args.y,
                 month = args.m,
                 date = args.d,
                 i = args.i;
-            var DAY_STR = this._weekMap['STR'],
-                GAP = this._weekMap['GAP'];
 
             var MM = __pad2(month);
             var DD = __pad2(date);
