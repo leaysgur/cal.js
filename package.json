@@ -1,5 +1,5 @@
 {
-  "name": "cal",
+  "name": "cal.js",
   "version": "1.0.1",
   "description": "Generate calendar array.",
   "main": "index.js",
