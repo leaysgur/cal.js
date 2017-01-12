@@ -1,43 +1,42 @@
  'use strict';
 
-const WEEK_MAP = {
-    SUN: {
-        GAP: 0,
-        STR: ['日', '月', '火', '水', '木', '金', '土']
-    },
-    MON: {
+const __getWeekMap = (fromMonday) => {
+    return fromMonday ? {
         GAP: 1,
         STR: ['月', '火', '水', '木', '金', '土', '日']
-    }
+    } : {
+        GAP: 0,
+        STR: ['日', '月', '火', '水', '木', '金', '土']
+    };
 };
 
 const __pad2 = (num) => {
     return ('0' + num).slice(-2);
-}
+};
 
 export default class Cal {
     constructor(options) {
       options = options || {};
 
-      this.year     = (options.year|0)  || 2014;
-      this.month    = (options.month|0) || 1;
-      this.date     = (options.date|0)  || 1;
-      this._weekMap = options.fromMonday ? WEEK_MAP['MON'] : WEEK_MAP['SUN'];
+      this.year  = (options.year|0)  || 2017;
+      this.month = (options.month|0) || 1;
+      this.date  = (options.date|0)  || 1;
+
+      this._weekMap = __getWeekMap(!!options.fromMonday);
       this._calArr  = this._generateCalArr();
       this._dayArr  = this._generateDayArr();
     }
 
     getCalArr() {
-        return this._calArr;
+        return this._calArr.slice();
     }
 
     getDayArr() {
-        return this._dayArr;
+        return this._dayArr.slice();
     }
 
     _generateCalArr() {
-        const DAY_STR = this._weekMap['STR'];
-        const GAP     = this._weekMap['GAP'];
+        const { DAY_STR, GAP } = this._weekMap;
 
         // monthのoriginは0から
         const thisFirstDateObj = new Date(this.year, this.month - 1, 1);
@@ -56,7 +55,7 @@ export default class Cal {
         const lastMonth   = (thisMonth === 1) ? 12 : thisMonth - 1;
 
         // 先月の末日は今月の0日目
-        const lastLastDateObj = new Date(mayLastYear, lastMonth, 0)
+        const lastLastDateObj = new Date(mayLastYear, lastMonth, 0);
         const lastLastDate    = lastLastDateObj.getDate();
 
         // 今月が12月なら、来月は1月で来年になる
@@ -75,8 +74,8 @@ export default class Cal {
                     m: lastMonth,
                     d: lastLastDate + date,
                     i: i,
-                    isNextMonth: 0,
-                    isLastMonth: 1
+                    isNextMonth: false,
+                    isLastMonth: true
                 });
             }
             // 来月
@@ -86,21 +85,20 @@ export default class Cal {
                     m: nextMonth,
                     d: date - thisLastDate,
                     i: i,
-                    isNextMonth: 1,
-                    isLastMonth: 0
+                    isNextMonth: true,
+                    isLastMonth: false
                 });
             }
             // 今月
             else {
-                dayObj = this._getDayObj({
+                calArr[i] = this._getDayObj({
                     y: thisYear,
                     m: thisMonth,
                     d: date,
                     i: i,
-                    isNextMonth: 0,
-                    isLastMonth: 0
+                    isNextMonth: false,
+                    isLastMonth: false
                 });
-                calArr[i] = dayObj;
             }
         }
 
@@ -108,8 +106,7 @@ export default class Cal {
     }
 
     _generateDayArr() {
-        const DAY_STR = this._weekMap['STR'];
-        const GAP     = this._weekMap['GAP'];
+        const { DAY_STR, GAP } = this._weekMap;
 
         const dayArr = [];
         let i = 0, l = DAY_STR.length;
@@ -124,12 +121,11 @@ export default class Cal {
     }
 
     _getDayObj(args) {
+        const { DAY_STR, GAP } = this._weekMap;
         const year    = args.y,
               month   = args.m,
               date    = args.d,
               i       = args.i;
-        const DAY_STR = this._weekMap['STR'],
-              GAP     = this._weekMap['GAP'];
 
         const MM          = __pad2(month);
         const DD          = __pad2(date);
@@ -160,4 +156,4 @@ export default class Cal {
     }
 }
 
-module.exports = Cal
+module.exports = Cal;
