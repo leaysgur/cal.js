@@ -94,10 +94,10 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 var __getWeekMap = function __getWeekMap(fromMonday) {
     return fromMonday ? {
         GAP: 1,
-        STR: ['月', '火', '水', '木', '金', '土', '日']
+        DAY_STR: ['月', '火', '水', '木', '金', '土', '日']
     } : {
         GAP: 0,
-        STR: ['日', '月', '火', '水', '木', '金', '土']
+        DAY_STR: ['日', '月', '火', '水', '木', '金', '土']
     };
 };
 
