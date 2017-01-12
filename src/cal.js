@@ -159,3 +159,5 @@ export default class Cal {
         };
     }
 }
+
+module.exports = Cal
