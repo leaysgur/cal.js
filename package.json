@@ -7,7 +7,8 @@
     "test": "test"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "webpack ./src/cal.js ./dist/cal.js --output-library Cal --output-library-target umd"
   },
   "repository": {
     "type": "git",
