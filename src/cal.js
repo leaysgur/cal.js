@@ -2,10 +2,10 @@
 
 const __getWeekMap = (fromMonday) => {
     return fromMonday ? {
-        GAP: 1,
+        GAP:     1,
         DAY_STR: ['月', '火', '水', '木', '金', '土', '日']
     } : {
-        GAP: 0,
+        GAP:     0,
         DAY_STR: ['日', '月', '火', '水', '木', '金', '土']
     };
 };
