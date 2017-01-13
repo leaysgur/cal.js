@@ -7,7 +7,7 @@
     "test": "test"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "ava --verbose",
     "build": "npm run prebuild && npm run build:umd && npm run build:minify && npm run flush && npm run docs",
     "prebuild": "babel src -d .tmp",
     "build:umd": "webpack ./.tmp/cal.js ./dist/cal.js --output-library Cal --output-library-target umd",
@@ -26,6 +26,7 @@
   },
   "homepage": "https://github.com/leader22/cal.js",
   "devDependencies": {
+    "ava": "^0.17.0",
     "babel-cli": "^6.18.0",
     "babel-preset-latest": "^6.16.0",
     "babili": "0.0.9",
