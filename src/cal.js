@@ -1,39 +1,42 @@
  'use strict';
 
-const __getWeekMap = (map, fromMonday) => {
-    // オプションで渡ってきたものは、妥当なら使う
-    const hasUserMap = map && map.length === 7 && Array.isArray(map);
+const utils = {
+    getToday() {
+        const d = new Date();
+        return {
+            year:  d.getFullYear(),
+            month: d.getMonth() + 1,
+            date:  d.getDate(),
+        };
+    },
 
-    const DAY_STR = hasUserMap ? map
-                               : fromMonday ? ['月', '火', '水', '木', '金', '土', '日']
-                                            : ['日', '月', '火', '水', '木', '金', '土'];
-    const GAP = fromMonday ? 1 : 0;
+    getWeekMap(map, fromMonday) {
+        // オプションで渡ってきたものは、妥当なら使う
+        const hasUserMap = map && map.length === 7 && Array.isArray(map);
 
-    return { DAY_STR, GAP };
+        const DAY_STR = hasUserMap ? map
+                                   : fromMonday ? ['月', '火', '水', '木', '金', '土', '日']
+                                                : ['日', '月', '火', '水', '木', '金', '土'];
+        const GAP = fromMonday ? 1 : 0;
+
+        return { DAY_STR, GAP };
+    },
+
+    pad2(num) {
+        return ('0' + num).slice(-2);
+    },
 };
-
-const __pad2 = (num) => {
-    return ('0' + num).slice(-2);
-};
-
-const today = (() => {
-    const d = new Date();
-    return {
-        year:  d.getFullYear(),
-        month: d.getMonth() + 1,
-        date:  d.getDate(),
-    };
-})();
 
 export default class Cal {
     constructor(options) {
       options = options || {};
 
+      const today = utils.getToday();
       this.year  = (options.year|0)  || today.year;
       this.month = (options.month|0) || today.month;
       this.date  = (options.date|0)  || today.date;
 
-      this._weekMap = __getWeekMap(options.weekStr, !!options.fromMonday);
+      this._weekMap = utils.getWeekMap(options.dayStr, !!options.fromMonday);
       this._calArr  = this._generateCalArr();
       this._dayArr  = this._generateDayArr();
     }
@@ -143,8 +146,8 @@ export default class Cal {
               i       = args.i;
 
         const YYYY        = String(year);
-        const MM          = __pad2(month);
-        const DD          = __pad2(date);
+        const MM          = utils.pad2(month);
+        const DD          = utils.pad2(date);
         const DAY         = DAY_STR[i % 7];
         const day         = (i + GAP) % 7;
         const isSunday    = day === 0;
