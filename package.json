@@ -16,14 +16,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/leader22/cal.git"
+    "url": "https://github.com/leader22/cal.js.git"
   },
   "author": "leader22",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/leader22/cal/issues"
+    "url": "https://github.com/leader22/cal.js/issues"
   },
-  "homepage": "https://github.com/leader22/cal",
+  "homepage": "https://github.com/leader22/cal.js",
   "devDependencies": {
     "babel-cli": "^6.18.0",
     "babel-preset-latest": "^6.16.0",
