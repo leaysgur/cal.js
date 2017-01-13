@@ -91,19 +91,28 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var __getWeekMap = function __getWeekMap(fromMonday) {
-    return fromMonday ? {
-        GAP: 1,
-        DAY_STR: ['月', '火', '水', '木', '金', '土', '日']
-    } : {
-        GAP: 0,
-        DAY_STR: ['日', '月', '火', '水', '木', '金', '土']
-    };
+var __getWeekMap = function __getWeekMap(map, fromMonday) {
+    // オプションで渡ってきたものは、妥当なら使う
+    var hasUserMap = map && map.length === 7 && Array.isArray(map);
+
+    var DAY_STR = hasUserMap ? map : fromMonday ? ['月', '火', '水', '木', '金', '土', '日'] : ['日', '月', '火', '水', '木', '金', '土'];
+    var GAP = fromMonday ? 1 : 0;
+
+    return { DAY_STR: DAY_STR, GAP: GAP };
 };
 
 var __pad2 = function __pad2(num) {
     return ('0' + num).slice(-2);
 };
+
+var today = function () {
+    var d = new Date();
+    return {
+        year: d.getFullYear(),
+        month: d.getMonth() + 1,
+        date: d.getDate()
+    };
+}();
 
 var Cal = function () {
     function Cal(options) {
@@ -111,11 +120,11 @@ var Cal = function () {
 
         options = options || {};
 
-        this.year = options.year | 0 || 2017;
-        this.month = options.month | 0 || 1;
-        this.date = options.date | 0 || 1;
+        this.year = options.year | 0 || today.year;
+        this.month = options.month | 0 || today.month;
+        this.date = options.date | 0 || today.date;
 
-        this._weekMap = __getWeekMap(!!options.fromMonday);
+        this._weekMap = __getWeekMap(options.weekStr, !!options.fromMonday);
         this._calArr = this._generateCalArr();
         this._dayArr = this._generateDayArr();
     }
@@ -168,7 +177,6 @@ var Cal = function () {
             var nextMonth = thisMonth === 12 ? 1 : thisMonth + 1;
 
             var calArr = [];
-            var dayObj = void 0;
             var i = 0,
                 l = 7 * 6; // 7days * 6weeks
             for (; i < l; i++) {
@@ -242,19 +250,20 @@ var Cal = function () {
                 date = args.d,
                 i = args.i;
 
+            var YYYY = String(year);
             var MM = __pad2(month);
             var DD = __pad2(date);
             var DAY = DAY_STR[i % 7];
             var day = (i + GAP) % 7;
-            var isSun = day === 0;
-            var isSat = day === 6;
+            var isSunday = day === 0;
+            var isSaturday = day === 6;
             var isNextMonth = args.isNextMonth;
             var isLastMonth = args.isLastMonth;
             var isBaseDate = !isLastMonth && !isNextMonth && date === this.date;
 
             return {
-                YYYYMMDD: year + MM + DD,
-                YYYY: year,
+                YYYYMMDD: YYYY + MM + DD,
+                YYYY: YYYY,
                 MM: MM,
                 DD: DD,
                 DAY: DAY,
@@ -263,8 +272,8 @@ var Cal = function () {
                 date: date,
                 day: day,
                 isBaseDate: isBaseDate,
-                isSunday: isSun,
-                isSaturday: isSat,
+                isSunday: isSunday,
+                isSaturday: isSaturday,
                 isNextMonth: isNextMonth,
                 isLastMonth: isLastMonth
             };
