@@ -49,10 +49,10 @@ export default class Cal {
         const thisLastDate = thisLastDateObj.getDate();
 
         const thisFirstDayIdx = (() => {
-            const index = DAY_STR.indexOf(thisFirstDay)
+            const index = DAY_STR.indexOf(thisFirstDay);
             // その月の1日が日曜日かつ設定が月曜始まりの場合、
             // 前月の最終月曜から出力しなければならないため、5を返す
-            return (index === 0 && GAP === 1) ? 5 : index - 1 - GAP
+            return (index === 0 && GAP === 1) ? 5 : index - 1 - GAP;
         })();
 
         // 今月が1月なら、先月は12月で去年になる
