@@ -91,28 +91,28 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var __getWeekMap = function __getWeekMap(map, fromMonday) {
-    // オプションで渡ってきたものは、妥当なら使う
-    var hasUserMap = map && map.length === 7 && Array.isArray(map);
+var utils = {
+    getToday: function getToday() {
+        var d = new Date();
+        return {
+            year: d.getFullYear(),
+            month: d.getMonth() + 1,
+            date: d.getDate()
+        };
+    },
+    getWeekMap: function getWeekMap(map, fromMonday) {
+        // オプションで渡ってきたものは、妥当なら使う
+        var hasUserMap = map && map.length === 7 && Array.isArray(map);
 
-    var DAY_STR = hasUserMap ? map : fromMonday ? ['月', '火', '水', '木', '金', '土', '日'] : ['日', '月', '火', '水', '木', '金', '土'];
-    var GAP = fromMonday ? 1 : 0;
+        var DAY_STR = hasUserMap ? map : fromMonday ? ['月', '火', '水', '木', '金', '土', '日'] : ['日', '月', '火', '水', '木', '金', '土'];
+        var GAP = fromMonday ? 1 : 0;
 
-    return { DAY_STR: DAY_STR, GAP: GAP };
+        return { DAY_STR: DAY_STR, GAP: GAP };
+    },
+    pad2: function pad2(num) {
+        return ('0' + num).slice(-2);
+    }
 };
-
-var __pad2 = function __pad2(num) {
-    return ('0' + num).slice(-2);
-};
-
-var today = function () {
-    var d = new Date();
-    return {
-        year: d.getFullYear(),
-        month: d.getMonth() + 1,
-        date: d.getDate()
-    };
-}();
 
 var Cal = function () {
     function Cal(options) {
@@ -120,11 +120,12 @@ var Cal = function () {
 
         options = options || {};
 
+        var today = utils.getToday();
         this.year = options.year | 0 || today.year;
         this.month = options.month | 0 || today.month;
         this.date = options.date | 0 || today.date;
 
-        this._weekMap = __getWeekMap(options.weekStr, !!options.fromMonday);
+        this._weekMap = utils.getWeekMap(options.dayStrArr, !!options.fromMonday);
         this._calArr = this._generateCalArr();
         this._dayArr = this._generateDayArr();
     }
@@ -251,8 +252,8 @@ var Cal = function () {
                 i = args.i;
 
             var YYYY = String(year);
-            var MM = __pad2(month);
-            var DD = __pad2(date);
+            var MM = utils.pad2(month);
+            var DD = utils.pad2(date);
             var DAY = DAY_STR[i % 7];
             var day = (i + GAP) % 7;
             var isSunday = day === 0;
