@@ -1,13 +1,15 @@
  'use strict';
 
-const __getWeekMap = (fromMonday) => {
-    return fromMonday ? {
-        GAP:     1,
-        DAY_STR: ['月', '火', '水', '木', '金', '土', '日']
-    } : {
-        GAP:     0,
-        DAY_STR: ['日', '月', '火', '水', '木', '金', '土']
-    };
+const __getWeekMap = (map, fromMonday) => {
+    // オプションで渡ってきたものは、妥当なら使う
+    const hasUserMap = map && map.length === 7 && Array.isArray(map);
+
+    const DAY_STR = hasUserMap ? map
+                               : fromMonday ? ['月', '火', '水', '木', '金', '土', '日']
+                                            : ['日', '月', '火', '水', '木', '金', '土'];
+    const GAP = fromMonday ? 1 : 0;
+
+    return { DAY_STR, GAP };
 };
 
 const __pad2 = (num) => {
@@ -31,7 +33,7 @@ export default class Cal {
       this.month = (options.month|0) || today.month;
       this.date  = (options.date|0)  || today.date;
 
-      this._weekMap = __getWeekMap(!!options.fromMonday);
+      this._weekMap = __getWeekMap(options.weekStr, !!options.fromMonday);
       this._calArr  = this._generateCalArr();
       this._dayArr  = this._generateDayArr();
     }
