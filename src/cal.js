@@ -68,7 +68,6 @@ export default class Cal {
         const nextMonth   = (thisMonth === 12) ? 1 : thisMonth + 1;
 
         const calArr = [];
-        let dayObj;
         let i = 0, l = 7 * 6; // 7days * 6weeks
         for (; i < l; i++) {
             const date = i - thisFirstDayIdx;
@@ -132,31 +131,32 @@ export default class Cal {
               date    = args.d,
               i       = args.i;
 
+        const YYYY        = String(year);
         const MM          = __pad2(month);
         const DD          = __pad2(date);
         const DAY         = DAY_STR[i % 7];
         const day         = (i + GAP) % 7;
-        const isSun       = day === 0;
-        const isSat       = day === 6;
+        const isSunday    = day === 0;
+        const isSaturday  = day === 6;
         const isNextMonth = args.isNextMonth;
         const isLastMonth = args.isLastMonth;
         const isBaseDate  = !isLastMonth && !isNextMonth && date === this.date;
 
         return {
-            YYYYMMDD   : year + MM + DD,
-            YYYY       : year,
-            MM         : MM,
-            DD         : DD,
-            DAY        : DAY,
-            year       : year,
-            month      : Math.max(0, month - 1),
-            date       : date,
-            day        : day,
-            isBaseDate : isBaseDate,
-            isSunday   : isSun,
-            isSaturday : isSat,
-            isNextMonth: isNextMonth,
-            isLastMonth: isLastMonth
+            YYYYMMDD: YYYY + MM + DD,
+            YYYY,
+            MM,
+            DD,
+            DAY,
+            year,
+            month: Math.max(0, month - 1),
+            date,
+            day,
+            isBaseDate,
+            isSunday,
+            isSaturday,
+            isNextMonth,
+            isLastMonth,
         };
     }
 }
