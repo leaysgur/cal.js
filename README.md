@@ -1,4 +1,4 @@
-cal
+cal.js
 ===
 
 Generate calendar array.
@@ -13,13 +13,37 @@ JavaScriptでカレンダーを作れと言われた経験はありませんか�
 
 そんな人のためのカレンダー表示用のライブラリです。
 
+## Install
+
+```sh
+npm i cal.js --save
+
+# or
+yarn add cal.js
+```
+
+or
+
+```html
+<script src="./dist/cal.min.js"></script>
+```
+
 ## Usage
 ```javascript
-var cal = new Cal({
-    year: 2014,
-    month: 12,
-    date: 4,
-    fromMonday: 1
+const Cal = require('cal.js');
+
+// 引数はすべてOptional
+const cal = new Cal({
+    // 未指定の場合は今日
+    year:  2017,
+    month: 1,
+    date:  13,
+
+    // 月曜はじまり or NOT
+    fromMonday: true,
+
+    // 未指定の場合は、「月火水木金土日」フォーマット
+    dayStrArr: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
 });
 
 cal.getDayArr(); // => 曜日表示用のラベル配列
