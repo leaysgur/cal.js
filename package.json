@@ -1,6 +1,6 @@
 {
   "name": "cal.js",
-  "version": "1.0.3",
+  "version": "1.1.0",
   "description": "Generate calendar array.",
   "main": "index.js",
   "directories": {
