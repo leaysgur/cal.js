@@ -14,13 +14,22 @@ const __pad2 = (num) => {
     return ('0' + num).slice(-2);
 };
 
+const today = (() => {
+    const d = new Date();
+    return {
+        year:  d.getFullYear(),
+        month: d.getMonth() + 1,
+        date:  d.getDate(),
+    };
+})();
+
 export default class Cal {
     constructor(options) {
       options = options || {};
 
-      this.year  = (options.year|0)  || 2017;
-      this.month = (options.month|0) || 1;
-      this.date  = (options.date|0)  || 1;
+      this.year  = (options.year|0)  || today.year;
+      this.month = (options.month|0) || today.month;
+      this.date  = (options.date|0)  || today.date;
 
       this._weekMap = __getWeekMap(!!options.fromMonday);
       this._calArr  = this._generateCalArr();
