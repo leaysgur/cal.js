@@ -36,7 +36,7 @@ export default class Cal {
       this.month = (options.month|0) || today.month;
       this.date  = (options.date|0)  || today.date;
 
-      this._weekMap = utils.getWeekMap(options.dayStr, !!options.fromMonday);
+      this._weekMap = utils.getWeekMap(options.dayStrArr, !!options.fromMonday);
       this._calArr  = this._generateCalArr();
       this._dayArr  = this._generateDayArr();
     }
