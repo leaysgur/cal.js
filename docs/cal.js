@@ -105,7 +105,7 @@ var utils = {
         // オプションで渡ってきたものは、妥当なら使う
         var hasUserMap = map && map.length === 7 && Array.isArray(map);
 
-        var DAY_STR = hasUserMap ? map : defaultMap.slice(firstDayOfWeek, 6).concat(defaultMap.slice(0, firstDayOfWeek));
+        var DAY_STR = hasUserMap ? map : defaultMap.slice(firstDayOfWeek).concat(defaultMap.slice(0, firstDayOfWeek));
 
         return { DAY_STR: DAY_STR, GAP: firstDayOfWeek };
     },
