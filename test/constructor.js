@@ -76,3 +76,66 @@ test('do not accept invalid day str', t => {
 
     t.true(c1 && c2 && c3 && c4);
 });
+
+
+const date202203FromSunday = {
+    firstWeek: [26,27,28,1,2,3,4],
+    lastWeek: [2,3,4,5,6,7,8]
+}
+
+const date202203FromMonday = {
+    firstWeek: [27,28,1,2,3,4,5],
+    lastWeek: [3,4,5,6,7,8,9]
+}
+
+const date202203FromTuesday = {
+    firstWeek: [28,1,2,3,4,5, 6],
+    lastWeek: [4,5,6,7,8,9,10]
+}
+
+const date202203FromWednesday = {
+    firstWeek: [21,23,24,25,26,27,28],
+    lastWeek: [29, 30, 1, 2, 3, 4, 5]
+}
+
+const paramsList = [
+    {
+        year: 2022,
+        month: 3,
+        firstDayOfWeek: 0,
+        expected: date202203FromSunday
+    },
+    {
+        year: 2022,
+        month: 3,
+        firstDayOfWeek: 1,
+        expected:date202203FromMonday
+    },
+    {
+        year: 2022,
+        month: 3,
+        firstDayOfWeek: 2,
+        expected: date202203FromTuesday
+    },
+    {
+        year: 2022,
+        month: 3,
+        firstDayOfWeek: 2,
+        expected: date202203FromWednesday
+    },
+]
+
+paramsList.forEach(params => {
+    test("return collect date", t => {
+        const cal = new Cal({year: params.year, month: params.month, firstDayOfWeek: params.firstDayOfWeek})
+        const dayArray = cal.getCalArr();
+
+        const firstWeek = dayArray.slice(0, 7).map(v => v.date)
+        const lastWeek = dayArray.slice(35, 7).map(v => v.date)
+
+        console.log(dayArray.map(v => v.date))
+
+        t.deepEqual(firstWeek, params.expected.firstWeek)
+        // t.deepEqual(lastWeek, params.expected.lastWeek)
+    })
+})
