@@ -77,65 +77,63 @@ test('do not accept invalid day str', t => {
     t.true(c1 && c2 && c3 && c4);
 });
 
-
-const date202203FromSunday = {
-    firstWeek: [26,27,28,1,2,3,4],
-    lastWeek: [2,3,4,5,6,7,8]
-}
-
-const date202203FromMonday = {
-    firstWeek: [27,28,1,2,3,4,5],
-    lastWeek: [3,4,5,6,7,8,9]
-}
-
-const date202203FromTuesday = {
-    firstWeek: [28,1,2,3,4,5, 6],
-    lastWeek: [4,5,6,7,8,9,10]
-}
-
-const date202203FromWednesday = {
-    firstWeek: [21,23,24,25,26,27,28],
-    lastWeek: [29, 30, 1, 2, 3, 4, 5]
-}
-
 const paramsList = [
     {
-        year: 2022,
+        year: 2023,
         month: 3,
         firstDayOfWeek: 0,
-        expected: date202203FromSunday
+        expected: {
+            firstWeek: [26,27,28,1,2,3,4],
+            lastWeek: [2,3,4,5,6,7,8]
+        }
     },
     {
-        year: 2022,
+        year: 2023,
         month: 3,
         firstDayOfWeek: 1,
-        expected:date202203FromMonday
+        expected: {
+            firstWeek: [27,28,1,2,3,4,5],
+            lastWeek: [3,4,5,6,7,8,9]
+        }
     },
     {
-        year: 2022,
+        year: 2023,
         month: 3,
         firstDayOfWeek: 2,
-        expected: date202203FromTuesday
+        expected: {
+            firstWeek: [28,1,2,3,4,5,6],
+            lastWeek: [4,5,6,7,8,9,10]
+        }
     },
     {
-        year: 2022,
+        year: 2023,
         month: 3,
-        firstDayOfWeek: 2,
-        expected: date202203FromWednesday
+        firstDayOfWeek: 3,
+        expected: {
+            firstWeek: [22,23,24,25,26,27,28],
+            lastWeek: [29,30,31,1,2,3,4]
+        }
+    },
+    {
+        year: 2023,
+        month: 3,
+        firstDayOfWeek: 4,
+        expected: {
+            firstWeek: [23,24,25,26,27,28,1],
+            lastWeek: [30,31,1,2,3,4,5]
+        }
     },
 ]
 
 paramsList.forEach(params => {
-    test("return collect date", t => {
+    test(`return collect date ${params.year}/${params.month} firstDayOfWeek: ${params.firstDayOfWeek}` , t => {
         const cal = new Cal({year: params.year, month: params.month, firstDayOfWeek: params.firstDayOfWeek})
         const dayArray = cal.getCalArr();
 
         const firstWeek = dayArray.slice(0, 7).map(v => v.date)
-        const lastWeek = dayArray.slice(35, 7).map(v => v.date)
-
-        console.log(dayArray.map(v => v.date))
+        const lastWeek = dayArray.slice(35).map(v => v.date)
 
         t.deepEqual(firstWeek, params.expected.firstWeek)
-        // t.deepEqual(lastWeek, params.expected.lastWeek)
+        t.deepEqual(lastWeek, params.expected.lastWeek)
     })
 })

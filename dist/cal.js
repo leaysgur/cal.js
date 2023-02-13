@@ -11,41 +11,41 @@
 return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
-
+/******/
 /******/ 	// The require function
 /******/ 	function __webpack_require__(moduleId) {
-
+/******/
 /******/ 		// Check if module is in cache
-/******/ 		if(installedModules[moduleId])
+/******/ 		if(installedModules[moduleId]) {
 /******/ 			return installedModules[moduleId].exports;
-
+/******/ 		}
 /******/ 		// Create a new module (and put it into the cache)
 /******/ 		var module = installedModules[moduleId] = {
 /******/ 			i: moduleId,
 /******/ 			l: false,
 /******/ 			exports: {}
 /******/ 		};
-
+/******/
 /******/ 		// Execute the module function
 /******/ 		modules[moduleId].call(module.exports, module, module.exports, __webpack_require__);
-
+/******/
 /******/ 		// Flag the module as loaded
 /******/ 		module.l = true;
-
+/******/
 /******/ 		// Return the exports of the module
 /******/ 		return module.exports;
 /******/ 	}
-
-
+/******/
+/******/
 /******/ 	// expose the modules object (__webpack_modules__)
 /******/ 	__webpack_require__.m = modules;
-
+/******/
 /******/ 	// expose the module cache
 /******/ 	__webpack_require__.c = installedModules;
-
+/******/
 /******/ 	// identity function for calling harmony imports with the correct context
 /******/ 	__webpack_require__.i = function(value) { return value; };
-
+/******/
 /******/ 	// define getter function for harmony exports
 /******/ 	__webpack_require__.d = function(exports, name, getter) {
 /******/ 		if(!__webpack_require__.o(exports, name)) {
@@ -56,7 +56,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/ 			});
 /******/ 		}
 /******/ 	};
-
+/******/
 /******/ 	// getDefaultExport function for compatibility with non-harmony modules
 /******/ 	__webpack_require__.n = function(module) {
 /******/ 		var getter = module && module.__esModule ?
@@ -65,13 +65,13 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/ 		__webpack_require__.d(getter, 'a', getter);
 /******/ 		return getter;
 /******/ 	};
-
+/******/
 /******/ 	// Object.prototype.hasOwnProperty.call
 /******/ 	__webpack_require__.o = function(object, property) { return Object.prototype.hasOwnProperty.call(object, property); };
-
+/******/
 /******/ 	// __webpack_public_path__
 /******/ 	__webpack_require__.p = "";
-
+/******/
 /******/ 	// Load entry module and return exports
 /******/ 	return __webpack_require__(__webpack_require__.s = 0);
 /******/ })
@@ -100,14 +100,21 @@ var utils = {
             date: d.getDate()
         };
     },
-    getWeekMap: function getWeekMap(map, fromMonday) {
+    getWeekMap: function getWeekMap(map, firstDayOfWeek) {
+        var defaultMap = ['日', '月', '火', '水', '木', '金', '土'];
         // オプションで渡ってきたものは、妥当なら使う
         var hasUserMap = map && map.length === 7 && Array.isArray(map);
 
-        var DAY_STR = hasUserMap ? map : fromMonday ? ['月', '火', '水', '木', '金', '土', '日'] : ['日', '月', '火', '水', '木', '金', '土'];
-        var GAP = fromMonday ? 1 : 0;
+        var DAY_STR = hasUserMap ? map : defaultMap.slice(firstDayOfWeek, 6).concat(defaultMap.slice(0, firstDayOfWeek));
 
-        return { DAY_STR: DAY_STR, GAP: GAP };
+        return { DAY_STR: DAY_STR, GAP: firstDayOfWeek };
+    },
+    getFirstDayOfWeek: function getFirstDayOfWeek(firstDayOfWeek, fromMonday) {
+        if ([0, 1, 2, 3, 4, 5, 6].includes(firstDayOfWeek)) {
+            return firstDayOfWeek;
+        }
+
+        return !!fromMonday ? 1 : 0;
     },
     pad2: function pad2(num) {
         return ('0' + num).slice(-2);
@@ -125,7 +132,8 @@ var Cal = function () {
         this.month = options.month | 0 || today.month;
         this.date = options.date | 0 || today.date;
 
-        this._weekMap = utils.getWeekMap(options.dayStrArr, !!options.fromMonday);
+        this.firstDayOfWeek = utils.getFirstDayOfWeek(options.firstDayOfWeek, options.fromMonday);
+        this._weekMap = utils.getWeekMap(options.dayStrArr, this.firstDayOfWeek);
         this._calArr = this._generateCalArr();
         this._dayArr = this._generateDayArr();
     }
@@ -143,26 +151,20 @@ var Cal = function () {
     }, {
         key: '_generateCalArr',
         value: function _generateCalArr() {
-            var _weekMap = this._weekMap,
-                DAY_STR = _weekMap.DAY_STR,
-                GAP = _weekMap.GAP;
+            var _this = this;
 
             // monthのoriginは0から
-
             var thisFirstDateObj = new Date(this.year, this.month - 1, 1);
             // 次月の0day目は、今月の末日
             var thisLastDateObj = new Date(this.year, this.month, 0);
 
             var thisYear = this.year;
             var thisMonth = this.month;
-            var thisFirstDay = DAY_STR[thisFirstDateObj.getDay()];
             var thisLastDate = thisLastDateObj.getDate();
 
             var thisFirstDayIdx = function () {
-                var index = DAY_STR.indexOf(thisFirstDay);
-                // その月の1日が日曜日かつ設定が月曜始まりの場合、
-                // 前月の最終月曜から出力しなければならないため、5を返す
-                return index === 0 && GAP === 1 ? 5 : index - 1 - GAP;
+                var idx = thisFirstDateObj.getDay() - 1 - _this.firstDayOfWeek;
+                return idx < 0 ? 7 + idx : idx;
             }();
 
             // 今月が1月なら、先月は12月で去年になる
@@ -222,9 +224,9 @@ var Cal = function () {
     }, {
         key: '_generateDayArr',
         value: function _generateDayArr() {
-            var _weekMap2 = this._weekMap,
-                DAY_STR = _weekMap2.DAY_STR,
-                GAP = _weekMap2.GAP;
+            var _weekMap = this._weekMap,
+                DAY_STR = _weekMap.DAY_STR,
+                GAP = _weekMap.GAP;
 
 
             var dayArr = [];
@@ -242,9 +244,9 @@ var Cal = function () {
     }, {
         key: '_getDayObj',
         value: function _getDayObj(args) {
-            var _weekMap3 = this._weekMap,
-                DAY_STR = _weekMap3.DAY_STR,
-                GAP = _weekMap3.GAP;
+            var _weekMap2 = this._weekMap,
+                DAY_STR = _weekMap2.DAY_STR,
+                GAP = _weekMap2.GAP;
 
             var year = args.y,
                 month = args.m,
