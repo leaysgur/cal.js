@@ -77,63 +77,50 @@ test('do not accept invalid day str', t => {
     t.true(c1 && c2 && c3 && c4);
 });
 
+// オプションのmonthは1始まり。返り値のmonthは0始まり。
 const paramsList = [
     {
-        year: 2023,
-        month: 3,
-        firstDayOfWeek: 0,
-        expected: {
-            firstWeek: [26,27,28,1,2,3,4],
-            lastWeek: [2,3,4,5,6,7,8]
-        }
+        options: { year: 2023, month: 3, firstDayOfWeek: 0 },
+        expected: { firstDate: {year: 2023, month: 1, date: 26}, lastDate: {year: 2023, month: 3, date: 8} }
     },
     {
-        year: 2023,
-        month: 3,
-        firstDayOfWeek: 1,
-        expected: {
-            firstWeek: [27,28,1,2,3,4,5],
-            lastWeek: [3,4,5,6,7,8,9]
-        }
+        options: { year: 2023, month: 3, firstDayOfWeek: 1 },
+        expected: { firstDate: {year: 2023, month: 1, date: 27}, lastDate: {year: 2023, month: 3, date: 9} }
     },
     {
-        year: 2023,
-        month: 3,
-        firstDayOfWeek: 2,
-        expected: {
-            firstWeek: [28,1,2,3,4,5,6],
-            lastWeek: [4,5,6,7,8,9,10]
-        }
+        options: { year: 2023, month: 3, firstDayOfWeek: 2 },
+        expected: { firstDate: {year: 2023, month: 1, date: 28}, lastDate: {year: 2023, month: 3, date: 10} }
     },
     {
-        year: 2023,
-        month: 3,
-        firstDayOfWeek: 3,
-        expected: {
-            firstWeek: [22,23,24,25,26,27,28],
-            lastWeek: [29,30,31,1,2,3,4]
-        }
+        options: { year: 2023, month: 3, firstDayOfWeek: 3 },
+        expected: { firstDate: {year: 2023, month: 1, date: 22}, lastDate: {year: 2023, month: 3, date: 4} }
     },
     {
-        year: 2023,
-        month: 3,
-        firstDayOfWeek: 4,
-        expected: {
-            firstWeek: [23,24,25,26,27,28,1],
-            lastWeek: [30,31,1,2,3,4,5]
-        }
+        options: { year: 2023, month: 3, firstDayOfWeek: 4 },
+        expected: { firstDate: {year: 2023, month: 1, date: 23}, lastDate: {year: 2023, month: 3, date: 5} }
     },
 ]
 
-paramsList.forEach(params => {
-    test(`return collect date ${params.year}/${params.month} firstDayOfWeek: ${params.firstDayOfWeek}` , t => {
-        const cal = new Cal({year: params.year, month: params.month, firstDayOfWeek: params.firstDayOfWeek})
+paramsList.forEach(({ options, expected }) => {
+    test(`return collect date, month: ${options.year}/${options.month} firstDayOfWeek: ${options.firstDayOfWeek}` , t => {
+        const cal = new Cal({year: options.year, month: options.month, firstDayOfWeek: options.firstDayOfWeek})
         const dayArray = cal.getCalArr();
 
-        const firstWeek = dayArray.slice(0, 7).map(v => v.date)
-        const lastWeek = dayArray.slice(35).map(v => v.date)
+        const firstDateObject = dayArray[0]
+        const lastDateObject = dayArray[41]
 
-        t.deepEqual(firstWeek, params.expected.firstWeek)
-        t.deepEqual(lastWeek, params.expected.lastWeek)
+        const firstDate = {
+            year: firstDateObject.year,
+            month: firstDateObject.month,
+            date: firstDateObject.date,
+        }
+        const lastDate = {
+            year: lastDateObject.year,
+            month: lastDateObject.month,
+            date: lastDateObject.date,
+        }
+
+        t.deepEqual(firstDate, expected.firstDate)
+        t.deepEqual(lastDate, expected.lastDate)
     })
 })
