@@ -163,8 +163,8 @@ var Cal = function () {
             var thisLastDate = thisLastDateObj.getDate();
 
             var thisFirstDayIdx = function () {
-                var idx = thisFirstDateObj.getDay() - 1 - _this.firstDayOfWeek;
-                return idx < 0 ? 7 + idx : idx;
+                var dayGap = thisFirstDateObj.getDay() - _this.firstDayOfWeek;
+                return dayGap < 0 ? 6 + dayGap : dayGap - 1;
             }();
 
             // 今月が1月なら、先月は12月で去年になる

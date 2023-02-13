@@ -67,9 +67,11 @@ export default class Cal {
         const thisMonth    = this.month;
         const thisLastDate = thisLastDateObj.getDate();
 
+        // この値により、カレンダーの開始日が決まる。
+        // -1: 開始日は1日 0: 1日の1日前から（前月最終日）... 5: 1日の6日前からとなる。
         const thisFirstDayIdx = (() => {
-            const idx = thisFirstDateObj.getDay() - 1 - this.firstDayOfWeek;
-            return idx < 0 ? 7 + idx : idx
+            const dayGap = thisFirstDateObj.getDay() - this.firstDayOfWeek;
+            return dayGap < 0 ? 6 + dayGap : dayGap - 1;
         })();
 
         // 今月が1月なら、先月は12月で去年になる

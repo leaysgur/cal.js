@@ -93,7 +93,7 @@ const paramsList = [
     },
     {
         options: { year: 2023, month: 3, firstDayOfWeek: 3 },
-        expected: { firstDate: {year: 2023, month: 1, date: 22}, lastDate: {year: 2023, month: 3, date: 4 } }
+        expected: { firstDate: {year: 2023, month: 2, date: 1}, lastDate: {year: 2023, month: 3, date: 11 } }
     },
     {
         options: { year: 2023, month: 3, firstDayOfWeek: 4 },
