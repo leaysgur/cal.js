@@ -39,7 +39,10 @@ const cal = new Cal({
     month: 1,
     date:  13,
 
-    // 月曜はじまり or NOT
+    // 週の始まりの曜日 0:日曜 1:月曜 ... 6:土曜
+    firstDayOfWeek: 2,
+
+    // 月曜はじまり or NOT（falseは日曜始まり）firstDayOfWeekが指定されている場合は無視される。
     fromMonday: true,
 
     // 未指定の場合は、「月火水木金土日」フォーマット
