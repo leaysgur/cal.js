@@ -43,8 +43,8 @@ export default class Cal {
       this.month = (options.month|0) || today.month;
       this.date  = (options.date|0)  || today.date;
 
-      this.firstDayOfWeek = utils.getFirstDayOfWeek(options.firstDayOfWeek, options.fromMonday);
-      this._weekMap = utils.getWeekMap(options.dayStrArr, this.firstDayOfWeek);
+      const firstDayOfWeek = utils.getFirstDayOfWeek(options.firstDayOfWeek, options.fromMonday);
+      this._weekMap = utils.getWeekMap(options.dayStrArr, firstDayOfWeek);
       this._calArr  = this._generateCalArr();
       this._dayArr  = this._generateDayArr();
     }
@@ -58,6 +58,7 @@ export default class Cal {
     }
 
     _generateCalArr() {
+        const { GAP } = this._weekMap;
         // monthのoriginは0から
         const thisFirstDateObj = new Date(this.year, this.month - 1, 1);
         // 次月の0day目は、今月の末日
@@ -67,12 +68,10 @@ export default class Cal {
         const thisMonth    = this.month;
         const thisLastDate = thisLastDateObj.getDate();
 
-        // この値により、カレンダーの開始日が決まる。
+        // thisFirstDayIdxの値により、カレンダーの開始日が決まる。
         // -1: 開始日は1日 0: 1日の1日前から（前月最終日）... 5: 1日の6日前からとなる。
-        const thisFirstDayIdx = (() => {
-            const dayGap = thisFirstDateObj.getDay() - this.firstDayOfWeek;
-            return dayGap < 0 ? 6 + dayGap : dayGap - 1;
-        })();
+        const tempDayGap = thisFirstDateObj.getDay() - GAP
+        const thisFirstDayIdx = tempDayGap < 0 ? 6 + tempDayGap : tempDayGap - 1
 
         // 今月が1月なら、先月は12月で去年になる
         const mayLastYear = (thisMonth === 1) ? thisYear - 1 : thisYear;

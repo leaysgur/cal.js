@@ -42,10 +42,14 @@ const cal = new Cal({
     // 週の始まりの曜日 0:日曜 1:月曜 ... 6:土曜
     firstDayOfWeek: 2,
 
-    // 月曜はじまり or NOT（falseは日曜始まり）firstDayOfWeekが指定されている場合は無視される。
+    // [非推奨] 月曜はじまり or NOT（falseは日曜始まり）
+    // firstDayOfWeekが指定されている場合は無視され、以下は等価
+    // firstDayOfWeek: 0 === fromMonday: false
+    // firstDayOfWeek: 1 === fromMonday: true
     fromMonday: true,
 
     // 未指定の場合は、「月火水木金土日」フォーマット
+    // firstDayOfWeekを指定する場合は、並び替えたものを渡す必要がある
     dayStrArr: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
 });
 
