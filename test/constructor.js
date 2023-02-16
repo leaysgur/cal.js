@@ -76,3 +76,106 @@ test('do not accept invalid day str', t => {
 
     t.true(c1 && c2 && c3 && c4);
 });
+
+// オプションのmonthは1始まり。返り値のmonthは0始まり。
+const paramsList = [
+    {
+        options: { year: 2023, month: 3, firstDayOfWeek: 0 },
+        expected: { firstDate: {year: 2023, month: 1, date: 26}, lastDate: {year: 2023, month: 3, date: 8 } }
+    },
+    {
+        options: { year: 2023, month: 3, firstDayOfWeek: 1 },
+        expected: { firstDate: {year: 2023, month: 1, date: 27}, lastDate: {year: 2023, month: 3, date: 9 } }
+    },
+    {
+        options: { year: 2023, month: 3, firstDayOfWeek: 2 },
+        expected: { firstDate: {year: 2023, month: 1, date: 28}, lastDate: {year: 2023, month: 3, date: 10 } }
+    },
+    {
+        options: { year: 2023, month: 3, firstDayOfWeek: 3 },
+        expected: { firstDate: {year: 2023, month: 2, date: 1}, lastDate: {year: 2023, month: 3, date: 11 } }
+    },
+    {
+        options: { year: 2023, month: 3, firstDayOfWeek: 4 },
+        expected: { firstDate: {year: 2023, month: 1, date: 23}, lastDate: {year: 2023, month: 3, date: 5 } }
+    },
+    {
+        options: { year: 2023, month: 3, firstDayOfWeek: 5 },
+        expected: { firstDate: {year: 2023, month: 1, date: 24}, lastDate: {year: 2023, month: 3, date: 6 } }
+    },
+    {
+        options: { year: 2023, month: 3, firstDayOfWeek: 6 },
+        expected: { firstDate: {year: 2023, month: 1, date: 25}, lastDate: {year: 2023, month: 3, date: 7 } }
+    },
+]
+
+paramsList.forEach(({ options, expected }) => {
+    test(`return collect date, month: ${options.year}/${options.month} firstDayOfWeek: ${options.firstDayOfWeek}` , t => {
+        const cal = new Cal({year: options.year, month: options.month, firstDayOfWeek: options.firstDayOfWeek});
+        const dayArray = cal.getCalArr();
+
+        const firstDateObject = dayArray[0];
+        const lastDateObject = dayArray[41];
+
+        const firstDate = {
+            year: firstDateObject.year,
+            month: firstDateObject.month,
+            date: firstDateObject.date,
+        };
+        const lastDate = {
+            year: lastDateObject.year,
+            month: lastDateObject.month,
+            date: lastDateObject.date,
+        };
+
+        t.deepEqual(firstDate, expected.firstDate);
+        t.deepEqual(lastDate, expected.lastDate);
+    })
+})
+
+const paramsList2 = [
+    {
+        options: { firstDayOfWeek: 0 },
+        expected: [
+            { str: "日", no: 0},
+            { str: "月", no: 1},
+            { str: "火", no: 2},
+            { str: "水", no: 3},
+            { str: "木", no: 4},
+            { str: "金", no: 5},
+            { str: "土", no: 6}
+        ]
+    },
+    {
+        options: { firstDayOfWeek: 1 },
+        expected: [
+            { str: "月", no: 1},
+            { str: "火", no: 2},
+            { str: "水", no: 3},
+            { str: "木", no: 4},
+            { str: "金", no: 5},
+            { str: "土", no: 6},
+            { str: "日", no: 0},
+        ]
+    },
+    {
+        options: { firstDayOfWeek: 2 },
+        expected: [
+            { str: "火", no: 2},
+            { str: "水", no: 3},
+            { str: "木", no: 4},
+            { str: "金", no: 5},
+            { str: "土", no: 6},
+            { str: "日", no: 0},
+            { str: "月", no: 1}
+        ]
+    },
+];
+
+paramsList2.forEach(({ options, expected}) => {
+    test(`return collect day,firstDayOfWeek: ${options.firstDayOfWeek}` , t => {
+        const cal = new Cal({firstDayOfWeek: options.firstDayOfWeek});
+        t.deepEqual(cal.getDayArr(), expected);
+    })
+})
+
