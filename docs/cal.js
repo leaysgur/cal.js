@@ -132,8 +132,8 @@ var Cal = function () {
         this.month = options.month | 0 || today.month;
         this.date = options.date | 0 || today.date;
 
-        this.firstDayOfWeek = utils.getFirstDayOfWeek(options.firstDayOfWeek, options.fromMonday);
-        this._weekMap = utils.getWeekMap(options.dayStrArr, this.firstDayOfWeek);
+        var firstDayOfWeek = utils.getFirstDayOfWeek(options.firstDayOfWeek, options.fromMonday);
+        this._weekMap = utils.getWeekMap(options.dayStrArr, firstDayOfWeek);
         this._calArr = this._generateCalArr();
         this._dayArr = this._generateDayArr();
     }
@@ -151,9 +151,9 @@ var Cal = function () {
     }, {
         key: '_generateCalArr',
         value: function _generateCalArr() {
-            var _this = this;
-
+            var GAP = this._weekMap.GAP;
             // monthのoriginは0から
+
             var thisFirstDateObj = new Date(this.year, this.month - 1, 1);
             // 次月の0day目は、今月の末日
             var thisLastDateObj = new Date(this.year, this.month, 0);
@@ -162,10 +162,10 @@ var Cal = function () {
             var thisMonth = this.month;
             var thisLastDate = thisLastDateObj.getDate();
 
-            var thisFirstDayIdx = function () {
-                var dayGap = thisFirstDateObj.getDay() - _this.firstDayOfWeek;
-                return dayGap < 0 ? 6 + dayGap : dayGap - 1;
-            }();
+            // thisFirstDayIdxの値により、カレンダーの開始日が決まる。
+            // -1: 開始日は1日 0: 1日の1日前から（前月最終日）... 5: 1日の6日前からとなる。
+            var tempDayGap = thisFirstDateObj.getDay() - GAP;
+            var thisFirstDayIdx = tempDayGap < 0 ? 6 + tempDayGap : tempDayGap - 1;
 
             // 今月が1月なら、先月は12月で去年になる
             var mayLastYear = thisMonth === 1 ? thisYear - 1 : thisYear;
